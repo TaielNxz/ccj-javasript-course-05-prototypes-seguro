@@ -137,8 +137,49 @@ Seguro.prototype.cotizarSeguro = function() {
 }
 
 UI.prototype.mostrarResultado = (total, seguro) => {
-    console.log(total)
-    console.log(seguro)
+
+    const { marca, year, tipo } = seguro;
+
+    // Crear variable que contenga la marca del auto en texto
+    switch (marca) {
+        case '1':
+            textoMarca = "Americano";
+            break;
+        case '2':
+            textoMarca = "Asiatico";
+            break;
+        case '3':
+            textoMarca = "Europeo";
+            break;
+        default:
+            break;
+    }
+
+    // Crear el resultado
+    const div = document.createElement('div');
+    div.classList.add('mt-10');
+    div.innerHTML = `
+        <p class="header">Tu Resumen</p>
+        <p class="font-bold">Marca: <span class="font-normal"> ${textoMarca} </span></p>
+        <p class="font-bold">Año: <span class="font-normal"> ${year} </span></p>
+        <p class="font-bold">Tipo: <span class="font-normal capitalize"> ${tipo} </span></p>
+        <p class="font-bold">Total: <span class="font-normal"> $ ${total} </span></p>
+    `;
+
+    // Seleccionar el contenedor del resultado
+    const resultadoDiv = document.querySelector('#resultado');
+
+    // Mostrar el spinner
+    const spinner = document.querySelector('#cargando');
+    spinner.style.display = 'block';
+
+    // Eliminar el spinner y Mostrar el resultado luego de 3 segundos
+    setTimeout(() => {
+        // Borrar el spinner
+        spinner.style.display = 'none'
+        // agregar resultado en su contenedor
+        resultadoDiv.appendChild(div);
+    }, 3000);
 }
 
 
@@ -164,11 +205,17 @@ function cotizarSeguro(e) {
 
     // Mostrar mensaje de exito
     ui.mostrarMensaje('Cotizando...', 'exito');
+    
+    // Ocultar las cotizaciones previas
+    const resultados = document.querySelector('#resultado div.mt-10');
+    if(resultados != null) {
+        resultados.remove();
+    };
 
     // Intanciar el seguro
     const seguro = new Seguro(marca, year, tipo);
     const total  = seguro.cotizarSeguro();
 
-    // Mostrar
+    // Mostrar cotizacion en el html
     ui.mostrarResultado(total, seguro);
 }
